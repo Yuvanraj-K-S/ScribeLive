@@ -1,17 +1,19 @@
 # backend/gemini/text.py
 
-import google.generativeai as genai
 import json
+from google import genai
 from utils.prompts import SUMMARY_PROMPT, FLASHCARD_PROMPT, DIAGRAM_PROMPT, SLIDE_PROMPT, EXPLANATION_PROMPT
 
 
 class GeminiText:
     def __init__(self, api_key: str):
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.client = genai.Client(api_key=api_key)
 
     def _call(self, prompt: str, content: str) -> str:
-        response = self.model.generate_content(prompt + "\n\n" + content)
+        response = self.client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt + "\n\n" + content
+        )
         raw = response.text.strip()
         if raw.startswith("```"):
             raw = raw.split("```")[1]
@@ -32,5 +34,8 @@ class GeminiText:
         return json.loads(self._call(SLIDE_PROMPT, content))
 
     def explain(self, content: str) -> str:
-        response = self.model.generate_content(EXPLANATION_PROMPT + "\n\n" + content)
+        response = self.client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=EXPLANATION_PROMPT + "\n\n" + content
+        )
         return response.text.strip()
