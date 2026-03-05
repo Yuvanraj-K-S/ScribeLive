@@ -100,24 +100,3 @@ async def explain(file: UploadFile = File(...)):
     extracted = vision.extract_from_image(image_bytes)
     result = text_ai.explain(json.dumps(extracted))
     return JSONResponse(content={"explanation": result})
-```
-
----
-
-### FILE 7 — `backend/requirements.txt` (create this new file)
-```
-fastapi
-uvicorn
-python-dotenv
-google-generativeai
-google-cloud-firestore
-reportlab
-python-pptx
-python-multipart
-```
-
----
-
-### FILE 8 — `.env` (create at root, **never commit this**)
-```
-GEMINI_API_KEY=your_api_key_here
